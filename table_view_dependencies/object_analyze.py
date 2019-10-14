@@ -27,13 +27,14 @@ for n,d in G.nodes(data=True):
 # find all predecessors of an output node
 table_predecs_set = set()
 table_predecs_list = []
-table_predecs_list.append(G.predecessors('T_D1'))
+for p in G.predecessors('T_D1'):
+    table_predecs_list.append(p)
+
 added_nodes = len(table_predecs_list)
 while added_nodes != 0:
-     for n in table_predecs_set:
+     for n in table_predecs_list:
          added_nodes = 0
-         new_pres = G.predecessors(n)
-         for p in new_pres:
+         for p in G.predecessors(n):
              table_predecs_list.append(p)
              added_nodes += 1
 
