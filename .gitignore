@@ -1,0 +1,7 @@
+/env/**
+/old/**
+/.vscode/**
+**/prod_*
+**/__pycache__/**
+/data/intermediate/**
+/data/output/**
