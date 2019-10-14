@@ -58,12 +58,12 @@ def build_object_graph():
     
     # enrich with table type and schema information    
     for n,d in G.nodes(data=True):
-        if d['label'] ==  ['tableload']:
-            n['schema']=tl_node_dict['schema']
-            n['type']=tl_node_dict['type']
-        if d['label'] ==  ['viewdef']:
-            n['schema']=vd_node_dict['schema']
-            n['type']=vd_node_dict['type']
+        if d['label'] ==  'tableload':
+            d['schema']=tl_node_dict[n]['schema']
+            d['type']=tl_node_dict[n]['type']
+        if d['label'] ==  'viewdef':
+            d['schema']=vd_node_dict[n]['schema']
+            d['type']=vd_node_dict[n]['type']
 
     return(G)
 

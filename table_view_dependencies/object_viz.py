@@ -15,12 +15,14 @@ tl_nodes = [n for n,v in G.nodes(data=True) if v['label'] == 'tableload']
 vd_nodes = [n for n,v in G.nodes(data=True) if v['label'] == 'viewdef'] 
 tl_edges = [(e,f) for e,f,v in G.edges(data=True) if v['label'] == 'tableload'] 
 vd_edges = [(e,f) for e,f,v in G.edges(data=True) if v['label'] == 'viewdef']
+views = [n for n,v in G.nodes(data=True) if v['type'] == 'VIEW']
+tables = [n for n,v in G.nodes(data=True) if v['type'] == 'BASE TABLE']
 
 # # nx draw: set positions
 pos = nx.spring_layout(G)  # positions for all nodes
 # # First, draw nodes from table load
-nx.draw_networkx_nodes(G, pos, nodelist=tl_nodes, node_color='b')
-nx.draw_networkx_nodes(G, pos, nodelist=vd_nodes, node_color='r')
+nx.draw_networkx_nodes(G, pos, nodelist=views, node_color='b')
+nx.draw_networkx_nodes(G, pos, nodelist=tables, node_color='r')
 nx.draw_networkx_edges(G, pos, edgelist=tl_edges, edge_color='b')
 nx.draw_networkx_edges(G, pos, edgelist=vd_edges, edge_color='r')
 nx.draw_networkx_labels(G,pos)
@@ -32,7 +34,7 @@ plt.show()
 # some plots
 #cpt = CircosPlot(graph=G, node_labels=True, node_color='label', edge_color='label')
 #
-cpt = CircosPlot(graph=G, node_labels=True)
+cpt = CircosPlot(graph=G, node_labels=True, node_color='schema')
 cpt.draw()
 plt.show()
 
@@ -52,5 +54,12 @@ in_degrees_dict = dict(G.in_degree())
 plt.bar(range(len(in_degrees_dict)), list(in_degrees_dict.values()), align='center')
 plt.xticks(range(len(in_degrees_dict)), list(in_degrees_dict.keys()), fontsize=5, rotation=30)
 plt.title("in_degrees")
+plt.show()
+
+out_degrees_dict = dict(G.out_degree())
+
+plt.bar(range(len(out_degrees_dict)), list(out_degrees_dict.values()), align='center')
+plt.xticks(range(len(out_degrees_dict)), list(out_degrees_dict.keys()), fontsize=5, rotation=30)
+plt.title("out_degrees")
 plt.show()
 
