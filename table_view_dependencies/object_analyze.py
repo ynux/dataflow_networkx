@@ -25,18 +25,22 @@ for n,d in G.nodes(data=True):
         outdegree_zero_not_output.append(n)
 
 # find all predecessors of an output node
-table_predecs_set = set()
 table_predecs_list = []
-for p in G.predecessors('T_D1'):
+
+for p in G.predecessors('T_D2'):
     table_predecs_list.append(p)
 
-added_nodes = len(table_predecs_list)
-while added_nodes != 0:
+num_before = 0
+num_after = len(table_predecs_list)
+nodes_done = set()
+while (num_after > num_before) != 0:
      for n in table_predecs_list:
-         added_nodes = 0
-         for p in G.predecessors(n):
-             table_predecs_list.append(p)
-             added_nodes += 1
+         if n not in nodes_done:
+             num_before = len(table_predecs_list)
+             for p in G.predecessors(n):
+               table_predecs_list.append(p)
+             nodes_done.add(n)
+             num_after = len(table_predecs_list)
 
 # find all successors of an input node
 
@@ -45,5 +49,5 @@ if __name__ == "__main__":
     print("number of edges: {}".format(len(G.edges())))
     print("nodes without incoming edges not in input layer: {}".format(indegree_zero_not_input))
     print("nodes without outgoing edges not in output layer: {}".format(outdegree_zero_not_output))
-    print("predecessors of T_D1: {}".format(table_predecs_set))
+    print("predecessors of T_D1: {}".format(table_predecs_list))
     

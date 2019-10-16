@@ -3,12 +3,12 @@
 import pickle
 import networkx as nx
 
-def build_schema_graph():
+def build_schema_graph(prefix='test'):
     # read from files created by write_node_set_edge_list.py 
-    viewdefs_node_inputfile = './data/intermediate/test_viewdefinitions_schemaonly_nodes.pickle'
-    viewdefs_edge_inputfile = './data/intermediate/test_viewdefinitions_schemaonly_edges.pickle'
-    tableload_node_inputfile = './data/intermediate/test_tableload_schemaonly_nodes.pickle'
-    tableload_edge_inputfile = './data/intermediate/test_tableload_schemaonly_edges.pickle'
+    viewdefs_node_inputfile = "./data/intermediate/{}_viewdefinitions_schemaonly_nodes.pickle".format(prefix)
+    viewdefs_edge_inputfile = "./data/intermediate/{}_viewdefinitions_schemaonly_edges.pickle".format(prefix)
+    tableload_node_inputfile = "./data/intermediate/{}_tableload_schemaonly_nodes.pickle".format(prefix)
+    tableload_edge_inputfile = "./data/intermediate/{}_tableload_schemaonly_edges.pickle".format(prefix)
 
     with open(viewdefs_node_inputfile,'rb') as node_file:
         vd_node_set = pickle.load(node_file)
@@ -31,12 +31,12 @@ def build_schema_graph():
     return(G)
 
 
-def build_object_graph():
+def build_object_graph(prefix='test'):
     # read from files created by write_node_set_edge_list.py 
-    viewdefs_node_inputfile = './data/intermediate/test_viewdefinitions_nodes.pickle'
-    viewdefs_edge_inputfile = './data/intermediate/test_viewdefinitions_edges.pickle'
-    tableload_node_inputfile = './data/intermediate/test_tableload_nodes.pickle'
-    tableload_edge_inputfile = './data/intermediate/test_tableload_edges.pickle'
+    viewdefs_node_inputfile = "./data/intermediate/{}_viewdefinitions_nodes.pickle".format(prefix)
+    viewdefs_edge_inputfile = "./data/intermediate/{}_viewdefinitions_edges.pickle".format(prefix)
+    tableload_node_inputfile = "./data/intermediate/{}_tableload_nodes.pickle".format(prefix)
+    tableload_edge_inputfile = "./data/intermediate/{}_tableload_edges.pickle".format(prefix)
 
     with open(viewdefs_node_inputfile,'rb') as node_file:
         vd_node_dict = pickle.load(node_file)

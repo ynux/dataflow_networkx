@@ -29,7 +29,7 @@ def find_nodes_outdegree_zero_not_output_layer(G, output_layer, write_file=True)
     return outdegree_zero_not_output
 
 
-def find_predecessors(G, start_node, write_file=True):
+def find_predecessors(G, start_node, with_schema=False, write_file=True):
     # find all predecessors of an output node
     table_predecs_list = []
 
@@ -47,6 +47,15 @@ def find_predecessors(G, start_node, write_file=True):
                     table_predecs_list.append(p)
                     nodes_done.add(n)
                     num_after = len(table_predecs_list)
+    if with_schema:
+        table_predecs_dict = {}
+        for n in table_predecs_list:
+            table_predecs_dict[n] = G.nodes[n]['schema']
+    if with_schema and write_file:
+        with open("./data/output/test_predecessors_of_{}_with_schema.csv".format(start_node), "w", newline="") as f:
+            for node in table_predecs_dict:
+                f.writelines("{},{}\n".format(node, table_predecs_dict[node]))
+    
     if write_file:
         # the list preservers the order in which the nodes were found, but can contain duplicates
         with open("./data/output/test_predecessors_of_{}.csv".format(start_node), "w", newline="") as f:
@@ -54,7 +63,6 @@ def find_predecessors(G, start_node, write_file=True):
         table_predecs_set = set(table_predecs_list)
         with open("./data/output/test_uniq_predecessors_of_{}.csv".format(start_node), "w", newline="") as f:
             f.writelines("%s\n" % node for node in table_predecs_set)
-
     return table_predecs_list
 
 # find all successors of an input node
@@ -68,5 +76,5 @@ if __name__ == "__main__":
     print("number of edges: {}".format(len(G.edges())))
     print("number of nodes without incoming edges not in input layer: {}".format(len(find_nodes_indegree_zero_not_input_layer(G, in_layer))))
     print("number of nodes without outgoing edges not in output layer: {}".format(len(find_nodes_outdegree_zero_not_output_layer(G, out_layer))))
-    print("number of predecessors of {}: {}".format(start_node_output, len(find_predecessors(G,start_node_output))))
+    print("number of predecessors of {}: {}".format(start_node_output, len(find_predecessors(G,start_node_output, with_schema=True))))
     
