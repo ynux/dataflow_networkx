@@ -1,6 +1,7 @@
 /env/**
 /old/**
 /.vscode/**
+**/.DS_Store/**
 **/prod_*
 **/__pycache__/**
 /data/intermediate/**
