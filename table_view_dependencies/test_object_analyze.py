@@ -28,14 +28,11 @@ def find_nodes_outdegree_zero_not_output_layer(G, output_layer, write_file=True)
 
     return outdegree_zero_not_output
 
-
 def find_predecessors(G, start_node, with_schema=False, write_file=True):
     # find all predecessors of an output node
     table_predecs_list = []
-
     for p in G.predecessors(start_node):
         table_predecs_list.append(p)
-
     num_before = 0
     num_after = len(table_predecs_list)
     nodes_done = set()
@@ -54,8 +51,7 @@ def find_predecessors(G, start_node, with_schema=False, write_file=True):
     if with_schema and write_file:
         with open("./data/output/test_predecessors_of_{}_with_schema.csv".format(start_node), "w", newline="") as f:
             for node in table_predecs_dict:
-                f.writelines("{},{}\n".format(node, table_predecs_dict[node]))
-    
+                f.writelines("{},{}\n".format(node, table_predecs_dict[node]))   
     if write_file:
         # the list preservers the order in which the nodes were found, but can contain duplicates
         with open("./data/output/test_predecessors_of_{}.csv".format(start_node), "w", newline="") as f:
@@ -65,16 +61,49 @@ def find_predecessors(G, start_node, with_schema=False, write_file=True):
             f.writelines("%s\n" % node for node in table_predecs_set)
     return table_predecs_list
 
-# find all successors of an input node
+
+def find_successors(G, start_node, with_schema=False, write_file=True):
+    # find all successors of an input node
+    table_successors_list = []
+    for p in G.successors(start_node):
+        table_successors_list.append(p)
+    num_before = 0
+    num_after = len(table_successors_list)
+    nodes_done = set()
+    while (num_after > num_before):
+        for n in table_successors_list:
+            if n not in nodes_done:
+                num_before = len(table_successors_list)
+                for p in G.successors(n):
+                    table_successors_list.append(p)
+                    nodes_done.add(n)
+                    num_after = len(table_successors_list)
+    if with_schema:
+        table_successors_dict = {}
+        for n in table_successors_list:
+            table_successors_dict[n] = G.nodes[n]['schema']
+    if with_schema and write_file:
+        with open("./data/output/test_successors_of_{}_with_schema.csv".format(start_node), "w", newline="") as f:
+            for node in table_successors_dict:
+                f.writelines("{},{}\n".format(node, table_successors_dict[node]))  
+    if write_file:
+        # the list preservers the order in which the nodes were found, but can contain duplicates
+        with open("./data/output/test_successors_of_{}.csv".format(start_node), "w", newline="") as f:
+            f.writelines("%s\n" % node for node in table_successors_list)
+        table_successors_set = set(table_successors_list)
+        with open("./data/output/test_uniq_successors_of_{}.csv".format(start_node), "w", newline="") as f:
+            f.writelines("%s\n" % node for node in table_successors_set)
+    return table_successors_list
 
 if __name__ == "__main__":
     G = build_graph.build_object_graph('test')
     out_layer = ['D']
     in_layer = ['A']
     start_node_output = 'T_D2'
+    start_node_input = 'T_A1'
     print("number of nodes: {}".format(len(G.nodes())))
     print("number of edges: {}".format(len(G.edges())))
     print("number of nodes without incoming edges not in input layer: {}".format(len(find_nodes_indegree_zero_not_input_layer(G, in_layer))))
     print("number of nodes without outgoing edges not in output layer: {}".format(len(find_nodes_outdegree_zero_not_output_layer(G, out_layer))))
     print("number of predecessors of {}: {}".format(start_node_output, len(find_predecessors(G,start_node_output, with_schema=True))))
-    
+    print("number of successors of {}: {}".format(start_node_input, len(find_successors(G,start_node_input, with_schema=True))))
