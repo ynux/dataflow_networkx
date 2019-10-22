@@ -1,0 +1,7 @@
+﻿TABLE_SCHEMA,TABLE_NAME,COLUMN_NAME
+A,A_T1,A_T1_cola
+A,A_T1,A_T1_colb
+A,A_T2,A_T2_colc
+A,A_T2,A_T2_cold
+A,A_T3,A_T3_cola
+A,A_T3,A_T3_colf
