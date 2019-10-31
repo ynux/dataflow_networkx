@@ -1,8 +1,8 @@
 # read from csv generated from a query of the information schema
 # 
 # TABLE_SCHEMA,TABLE_NAME,COLUMN_NAME
-# A,A_T1,A_T1_cola
-# A,A_T1,A_T1_colb
+# A,A_T1,cola
+# A,A_T1,colb
 #
 # column info of tables and views that are already nodes in the graph.
 # We add columns as nodes, with edges to the table they are part of. They are identified by their 
@@ -34,7 +34,7 @@ with open(inputfile) as f:
      if line_count == 0:
          line_count += 1
      else:
-         node_dict[row[1]] = { 'type': 'COLUMN'} 
+         node_dict[row[2]] = { 'type': 'COLUMN'}
          edge_list.append((row[2], row[1] ))
          line_count += 1
 
