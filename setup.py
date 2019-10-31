@@ -16,5 +16,5 @@ setup(
     ],
     packages=find_packages(exclude=['contrib', 'docs', 'tests']),
     python_requires='>=3.5',
-    install_requires=['networkx', 'nxviz'],
+    install_requires=['networkx==2.2', 'nxviz'],
 )
