@@ -3,7 +3,7 @@
 import pickle
 import networkx as nx
 
-def build_schema_graph(prefix='test'):
+def build_schema_graph(prefix='test', write_file=False):
     # read from files created by write_node_set_edge_list.py 
     viewdefs_node_inputfile = "./data/intermediate/{}_viewdefinitions_schemaonly_nodes.pickle".format(prefix)
     viewdefs_edge_inputfile = "./data/intermediate/{}_viewdefinitions_schemaonly_edges.pickle".format(prefix)
@@ -27,11 +27,14 @@ def build_schema_graph(prefix='test'):
     G.add_nodes_from(tl_node_set, label='tableload')
     G.add_edges_from(vd_edge_list, label='viewdef')
     G.add_edges_from(tl_edge_list, label='tableload')
+
+    if write_file:
+        nx.write_graphml(G, './data/output/{}_schema.xml'.format(prefix))
     
     return(G)
 
 
-def build_object_graph(prefix='test'):
+def build_object_graph(prefix='test', write_file=False):
     # read from files created by write_node_set_edge_list.py 
     viewdefs_node_inputfile = "./data/intermediate/{}_viewdefinitions_nodes.pickle".format(prefix)
     viewdefs_edge_inputfile = "./data/intermediate/{}_viewdefinitions_edges.pickle".format(prefix)
@@ -65,6 +68,9 @@ def build_object_graph(prefix='test'):
             d['schema']=vd_node_dict[n]['schema']
             d['type']=vd_node_dict[n]['type']
 
+    if write_file:
+        nx.write_graphml(G, './data/output/{}_object.xml'.format(prefix))
+ 
     return(G)
 
 
@@ -73,3 +79,4 @@ if __name__ == '__main__':
     print(len(Gsch.nodes()), len(Gsch.edges()))
     Gobj = build_object_graph()
     print(len(Gobj.nodes()), len(Gobj.edges()))
+    #build_object_graph("prod", write_file=True)
