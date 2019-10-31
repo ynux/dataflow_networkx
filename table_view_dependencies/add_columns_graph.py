@@ -19,8 +19,8 @@ def add_columns_graph(G, prefix='test'):
 
     G.add_nodes_from(node_dict, label='column')
     for n,d in G.nodes(data=True):
-        if d['label'] ==  'column':
-            d['type']=node_dict[n]['type']
+        if d['label'] == 'column':
+            d['type'] = 'COLUMN'
 
     G.add_edges_from(edge_list, label='column')
 
