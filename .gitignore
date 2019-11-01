@@ -2,7 +2,7 @@
 /old/**
 /.vscode/**
 **/.DS_Store/**
-**/prod_*/**
+**/prod_*
 **/__pycache__/**
 /data/intermediate/**
 /data/output/**
