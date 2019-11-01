@@ -1,4 +1,4 @@
-# build schema graph from pickled files
+# build graphs from pickled files created from functions in prepare_graph_input.py
 import pickle
 import networkx as nx
 
@@ -32,7 +32,7 @@ def build_schema_graph(prefix='test', write_file=False):
     
     return(G)
 
-def build_object_graph(prefix='test', write_file=False):
+def build_object_graph(prefix='test', add_columns=False, write_file=False):
     # read from files created by write_node_set_edge_list.py 
     viewdefs_node_inputfile = "./data/intermediate/{}_viewdefinitions_nodes.pickle".format(prefix)
     viewdefs_edge_inputfile = "./data/intermediate/{}_viewdefinitions_edges.pickle".format(prefix)
@@ -66,6 +66,8 @@ def build_object_graph(prefix='test', write_file=False):
             d['schema']=vd_node_dict[n]['schema']
             d['type']=vd_node_dict[n]['type']
 
+    if add_columns:
+        G = add_columns_graph(G, prefix=prefix)
     if write_file:
         nx.write_graphml(G, './data/output/{}_object.xml'.format(prefix))
  
@@ -94,18 +96,45 @@ def build_pk_graph(prefix='test', add_tab_cols = False, write_file=False):
         with open(table_node_inputfile,'rb') as node_file:
             tb_node_dict = pickle.load(node_file)
         for node in tb_node_dict:
-            if node not in G:
+            if node not in G and tb_node_dict[node]['type'] == "BASE TABLE":
                 G.add_node(node, label='table')
 
     if write_file:
         nx.write_graphml(G, './data/output/{}_table_pk.xml'.format(prefix))
- 
+    return(G)
+
+def add_columns_graph(G, prefix='test'):
+    """
+    add columns to graph, tables and views have to already be the graph as nodes
+    columns are nodes of type COLUMN. "table a has column b" is an edge. 
+    """
+    # Columns are identified by names, so one column can have edges to many nodes.
+    # We assume table names to be unique across schemas.
+    # read from files created by write_node_set_edge_list.py 
+    node_inputfile = "./data/intermediate/{}_columns_nodes.pickle".format(prefix)
+    edge_inputfile = "./data/intermediate/{}_columns_edges.pickle".format(prefix)
+
+    with open(node_inputfile,'rb') as node_file:
+        node_dict = pickle.load(node_file)
+    with open(edge_inputfile, 'rb') as edge_file:
+        edge_list = pickle.load(edge_file)
+
+    G.add_nodes_from(node_dict, label='column')
+    for n,d in G.nodes(data=True):
+        if d['label'] == 'column':
+            d['type'] = 'COLUMN'
+
+    G.add_edges_from(edge_list, label='column')    
     return(G)
 
 if __name__ == '__main__':
-    #Gsch = build_schema_graph()
-    #print(len(Gsch.nodes()), len(Gsch.edges()))
-    #Gobj = build_object_graph()
-    #print(len(Gobj.nodes()), len(Gobj.edges()))
-    #build_object_graph("prod", write_file=True)
-    build_pk_graph(add_tab_cols=True, write_file=True)
+    Gsch = build_schema_graph()
+    print("Schema Graph nodes: {0}, Schema Graph edges: {1}".format(len(Gsch.nodes()), len(Gsch.edges())))
+    Gobj = build_object_graph(add_columns=False)
+    print("Object Graph nodes: {0}, Object Graph edges: {1}".format(len(Gobj.nodes()), len(Gobj.edges())))
+    Gobjcol = build_object_graph(add_columns=True)
+    print("Object Graph with Cols nodes: {0}, Object Graph with Cols edges: {1}".format(len(Gobjcol.nodes()), len(Gobjcol.edges())))
+    Gpk = build_pk_graph(add_tab_cols=False)
+    print("Primary Key Graph nodes: {0}, Primary Key Graph edges: {1}".format(len(Gpk.nodes()), len(Gpk.edges())))
+    Gpk = build_pk_graph(add_tab_cols=True)
+    print("Primary Key Graph with lonely Tables nodes: {0}, Primary Key Graph with lonely Tables edges: {1}".format(len(Gpk.nodes()), len(Gpk.edges())))
