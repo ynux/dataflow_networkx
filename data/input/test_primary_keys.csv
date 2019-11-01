@@ -1,0 +1,13 @@
+"schema_name","table_name","column_name","key_sequence"
+A,T_A1,cola,1
+A,T_A3,cola,1
+A,T_A3,colf,2
+A,T_A4,cold,1
+B,T_B1,cola,1
+B,T_B2,colb,1
+B,T_B3,cola,1
+B,T_B4,cold,1
+C,T_C1,cola,1
+C,T_C2,colb,2
+C,T_C3,colf,1
+C,T_C4,cole,1
