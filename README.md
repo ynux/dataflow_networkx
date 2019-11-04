@@ -4,13 +4,13 @@
 
 This code was written to create a graph from a data flow like the following one:
 
-1 - Tables are loaded, either from other tables, or from Views
-2 - Views are built from tables
+1. Tables are loaded, either from other tables, or from Views
+2. Views are built from tables
 
 We can extract information from the load toal and the view defining sql:
 
-1 - For every loaded table: schema_name, table_name, source_schema_name, source_object_name, source_object_type. 
-2 - For every created view: schema_name, view_name, referenced_schema_name, referenced_object_name, referenced_object_type
+1.  For every loaded table: schema_name, table_name, source_schema_name, source_object_name, source_object_type. 
+2. For every created view: schema_name, view_name, referenced_schema_name, referenced_object_name, referenced_object_type
 
 ### Input Format, and Rewriting it for Graph Digestion
 

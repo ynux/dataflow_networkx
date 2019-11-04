@@ -90,6 +90,10 @@ def build_pk_graph(prefix='test', add_tab_cols = False, write_file=False):
     G = nx.Graph()
     G.add_nodes_from(pk_node_dict, label='pk')
     G.add_edges_from(pk_edge_list, label='pk')
+    for n,d in G.nodes(data=True):
+        d['type']=pk_node_dict[n]['type']
+        if pk_node_dict[n]['type'] == "BASE TABLE":
+            d['schema']=pk_node_dict[n]['schema']
 
     if add_tab_cols:
         table_node_inputfile = "./data/intermediate/{}_tableload_nodes.pickle".format(prefix)
@@ -97,7 +101,7 @@ def build_pk_graph(prefix='test', add_tab_cols = False, write_file=False):
             tb_node_dict = pickle.load(node_file)
         for node in tb_node_dict:
             if node not in G and tb_node_dict[node]['type'] == "BASE TABLE":
-                G.add_node(node, label='table')
+                G.add_node(node, label='added table')
 
     if write_file:
         nx.write_graphml(G, './data/output/{}_table_pk.xml'.format(prefix))
@@ -136,5 +140,5 @@ if __name__ == '__main__':
     print("Object Graph with Cols nodes: {0}, Object Graph with Cols edges: {1}".format(len(Gobjcol.nodes()), len(Gobjcol.edges())))
     Gpk = build_pk_graph(add_tab_cols=False)
     print("Primary Key Graph nodes: {0}, Primary Key Graph edges: {1}".format(len(Gpk.nodes()), len(Gpk.edges())))
-    Gpk = build_pk_graph(add_tab_cols=True)
+    Gpk = build_pk_graph(add_tab_cols=True, prefix="test", write_file=False)
     print("Primary Key Graph with lonely Tables nodes: {0}, Primary Key Graph with lonely Tables edges: {1}".format(len(Gpk.nodes()), len(Gpk.edges())))

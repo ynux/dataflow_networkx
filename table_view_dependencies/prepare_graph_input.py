@@ -152,7 +152,7 @@ def viewdefinitions_schemaonly_graph_input(prefix, write_file=True):
     return node_dict, edge_list
 
 def columns_prepare_graph_input(prefix, write_file = True):
-    """ reads from  <prefix>_table_columns.csv
+    """ reads from  <prefix>_columns.csv
     writes to <prefix>_columns_nodes.pickle, <prefix>_columns_edges.pickle """
     # read from csv created from information schema
     # TABLE_SCHEMA,TABLE_NAME,COLUMN_NAME
@@ -164,7 +164,7 @@ def columns_prepare_graph_input(prefix, write_file = True):
     #  name, which means that one column can have edges to many tables.
     # Schema information is ignored. 
     # We assume that the table names are unique across schemas ( we could check the schema attribute but don't )
-    inputfile = "./data/input/{0}_table_columns.csv".format(prefix)
+    inputfile = "./data/input/{0}_columns.csv".format(prefix)
     node_outputfile = "./data/intermediate/{}_columns_nodes.pickle".format(prefix)
     edge_outputfile = "./data/intermediate/{}_columns_edges.pickle".format(prefix)
     node_dict = {}
@@ -211,7 +211,7 @@ def primary_keys_prepare_graph_input(prefix, write_file=True):
             if line_count == 0:
                 line_count += 1
             else:
-                node_dict[row[1]] = { 'type': 'TABLE', 'schema': row[0]}
+                node_dict[row[1]] = { 'type': 'BASE TABLE', 'schema': row[0]}
                 node_dict[row[2]]  = { 'type': 'PK'}
                 edge_list.append((row[2], row[1] ))
                 line_count += 1
@@ -223,7 +223,7 @@ def primary_keys_prepare_graph_input(prefix, write_file=True):
     return node_dict, edge_list
 
 def tables_prepare_graph_input(prefix, write_file=True):
-    """ reads from  <prefix>_table_columns.csv
+    """ reads from  <prefix>_columns.csv
     writes to <prefix>_table_nodes.pickle """
     # read from csv created from information schema
     # TABLE_SCHEMA,TABLE_NAME,COLUMN_NAME
@@ -232,7 +232,7 @@ def tables_prepare_graph_input(prefix, write_file=True):
     # tables will be nodes.
     # no edges. columns are ignored. schema is added as attribute.
     # Usage: to add tables that are missing in the table load infos
-    inputfile = "./data/input/{0}_table_columns.csv".format(prefix)
+    inputfile = "./data/input/{0}_columns.csv".format(prefix)
     node_outputfile = "./data/intermediate/{}_table_nodes.pickle".format(prefix)
     node_dict = {}
 
@@ -261,8 +261,9 @@ if __name__ == "__main__":
     print("viewdefinition scheme nodes: {0}, viewdefinition schema edges: {1}".format(len(node_dict), len(edge_list)))
     node_dict, edge_list = columns_prepare_graph_input("test", write_file=False)
     print("column nodes: {0}, column edges: {1}".format(len(node_dict), len(edge_list)))
-    node_dict, edge_list = primary_keys_prepare_graph_input("test", write_file=False)
+    node_dict, edge_list = primary_keys_prepare_graph_input("test", write_file=True)
     print("primary key nodes: {0}, primary key edges: {1}".format(len(node_dict), len(edge_list)))
-    node_dict = tables_prepare_graph_input("test")
+    node_dict = tables_prepare_graph_input("test", write_file=False)
     print("table nodes: {0}".format(len(node_dict)))
+    
     
